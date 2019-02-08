@@ -1,38 +1,10 @@
-.. -*- mode: rst -*-
+This repo contains code and analysis used in the paper:
 
-|Travis|_ |AppVeyor|_ |Codecov|_ |CircleCI|_ |ReadTheDocs|_
+"FARE: Diagnostics for Fair Ranking using Pairwise Error Metrics" in the proceedings of the Web Conference (WWW 2019)
+by Caitlin Kuhlman, Maryann Vanvalkenburg, Elke Rundensteiner 
 
-.. |Travis| image:: https://travis-ci.org/scikit-learn-contrib/project-template.svg?branch=master
-.. _Travis: https://travis-ci.org/scikit-learn-contrib/project-template
+This work is released under the 3-Clause BSD License.
 
-.. |AppVeyor| image:: https://ci.appveyor.com/api/projects/status/coy2qqaqr1rnnt5y/branch/master?svg=true
-.. _AppVeyor: https://ci.appveyor.com/project/glemaitre/project-template
+FARE implementation is compatible for use with [scikit-learn](https://scikit-learn.org/)
 
-.. |Codecov| image:: https://codecov.io/gh/scikit-learn-contrib/project-template/branch/master/graph/badge.svg
-.. _Codecov: https://codecov.io/gh/scikit-learn-contrib/project-template
-
-.. |CircleCI| image:: https://circleci.com/gh/scikit-learn-contrib/project-template.svg?style=shield&circle-token=:circle-token
-.. _CircleCI: https://circleci.com/gh/scikit-learn-contrib/project-template/tree/master
-
-.. |ReadTheDocs| image:: https://readthedocs.org/projects/FARE/badge/?version=latest
-.. _ReadTheDocs: https://FARE.readthedocs.io/en/latest/?badge=latest
-
-project-template - A template for scikit-learn contributions
-============================================================
-
-.. _scikit-learn: https://scikit-learn.org
-
-**project-template** is a template project for scikit-learn_ compatible
-extensions.
-
-It aids development of estimators that can be used in scikit-learn pipelines
-and (hyper)parameter search, while facilitating testing (including some API
-compliance), documentation, open source development, packaging, and continuous
-integration.
-
-.. _documentation: https://FARE.readthedocs.io/en/latest/quick_start.html
-
-Refer to the documentation_ to modify the template for your own scikit-learn
-contribution.
-
-*Thank you for cleanly contributing to the scikit-learn ecosystem!*
+The project organization was adaptd from the scikit-learn [project-template](https://github.com/scikit-learn-contrib/project-template)
