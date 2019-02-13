@@ -12,14 +12,14 @@ with open(ver_file) as f:
     exec(f.read())
 
 DISTNAME = 'FARE'
-DESCRIPTION = 'A template for scikit-learn compatible packages.'
-with codecs.open('README.rst', encoding='utf-8-sig') as f:
+DESCRIPTION = 'Diagnostics for fair ranking using pariwise error metrics.'
+with codecs.open('README.md', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
-MAINTAINER = 'V. Birodkars, G. Lemaitre'
-MAINTAINER_EMAIL = 'vighneshbirodkar@nyu.edu, g.lemaitre58@gmail.com'
-URL = 'https://github.com/scikit-learn-contrib/project-template'
+MAINTAINER = 'Caitlin Kuhlman'
+MAINTAINER_EMAIL = 'cakuhlman@wpi.edu'
+URL = 'https://github.com/caitlinkuhlman/FARE'
 LICENSE = 'new BSD'
-DOWNLOAD_URL = 'https://github.com/scikit-learn-contrib/project-template'
+DOWNLOAD_URL = 'https://github.com/caitlinkuhlman/FARE'
 VERSION = __version__
 INSTALL_REQUIRES = ['numpy', 'scipy', 'scikit-learn']
 CLASSIFIERS = ['Intended Audience :: Science/Research',
