@@ -2,7 +2,7 @@
 
     References
     ----------
-    Caitlin Kuhlman, Maryann Vanvalkenburg, Elke Rundensteiner. 
+    Caitlin Kuhlman, Maryann VanValkenburg, Elke Rundensteiner. 
     "FARE: Diagnostics for Fair Ranking using Pairwise Error Metrics" 
     in the proceedings of the Web Conference (WWW 2019)
 """
@@ -26,7 +26,6 @@ def _pairs(n):
 
 #calibration
 def _merge_cal(h1,h2,g):
- 
     count = 0
     arr = []
     i=0
@@ -36,16 +35,16 @@ def _merge_cal(h1,h2,g):
         if h1[i][1] < h2[j][1]:
             arr.append(h1[i])
         else:
-            k=j
-            while(k<len(h2) and h1[i][1] > h2[k][1]):
+            while(j<len(h2) and h1[i][1] > h2[j][1]):
                 # count inverted pairs containing group
-                if(h1[i][2] == g or h2[k][2] == g): #TODO: checking h1 many times
-                    count += 1
-                k+=1
-            arr.append(h2[j])
-            j+=1
+                if h2[j][2] == g:
+                    count += len(h1[i:])
+                else:
+                    count += np.bincount(np.array(h1, dtype=int)[i:,2], minlength=2)[g]
+                arr.append(h2[j])
+                j+=1
+            arr.append(h1[i])
         i+=1
-        
 #     add any remaining elements
     while i < len(h1):
         arr.append(h1[i])
@@ -67,14 +66,13 @@ def _merge_eq(h1,h2,g):
         if h1[i][1] < h2[j][1]:
             arr.append(h1[i])
         else:
-            k=j
-            while(k<len(h2) and h1[i][1] > h2[k][1]):
+            while(j<len(h2) and h1[i][1] > h2[j][1]):
+                if(h2[j][2] != g):
                 # count inverted pairs favoring group
-                if(h1[i][2] == g and h2[k][2] != g): #TODO: checking h1 many times
-                    count += 1
-                k+=1
-            arr.append(h2[j])
-            j+=1
+                    count += np.bincount(np.array(h1, dtype=int)[i:,2], minlength=2)[g]
+                arr.append(h2[j])
+                j+=1
+            arr.append(h1[i])
         i+=1
     while i < len(h1):
         arr.append(h1[i])
@@ -86,19 +84,19 @@ def _merge_eq(h1,h2,g):
 
 # parity
 def _merge_parity(h1,h2,g):
-    count0 = 0
     count1 = 0
+    count2 = 0
     i=0
     while i < len(h1): 
-        if h1[i]!= g:
-            count0 +=1
+        if h1[i]== g:
+            count1 +=1
         i+=1
     i=0
     while i < len(h2):
-        if h2[i] == g:
-            count1 +=1  
+        if h2[i] != g:
+            count2 +=1  
         i+=1
-    count = count0*count1        
+    count = count1*count2   
     return np.concatenate([h1,h2]), count
 
 
@@ -139,8 +137,8 @@ def rank_equality(y_true, y_pred, groups):
     Examples
     --------
     >>> y_true = [1,2,3,4]
-    >>> y_pred = [1,4,2,3]
-    >>> groups = [0,1,0,1]
+    >>> y_pred = [1,3,4,2]
+    >>> groups =[0,1,0,1]
     >>> rank_equality(y_true,y_pred,groups)
     (0.0, 0.25)
     
@@ -149,7 +147,7 @@ def rank_equality(y_true, y_pred, groups):
     r = np.transpose([y_true,y_pred,groups])
     r = r[r[:,0].argsort()]
     #count the items in each group for narmalization
-    len_groups = np.bincount(groups)
+    len_groups = np.bincount(groups, minlength=2)
     p = len_groups[0]*len_groups[1]
     e0 = 0 if p == 0 else _count_inversions(r, 0, len(r)-1, _merge_eq, 0)[1] / p
     e1 = 0 if p == 0 else _count_inversions(r, 0, len(r)-1, _merge_eq, 1)[1] / p
@@ -181,8 +179,8 @@ def rank_calibration(y_true, y_pred, groups):
     Examples
     --------
     >>> y_true = [1,2,3,4]
-    >>> y_pred = [1,4,2,3]
-    >>> groups = [0,1,0,1]
+    >>> y_pred = [1,3,4,2]
+    >>> groups =[0,1,0,1]
     >>> rank_calibration(y_true,y_pred,groups)
     (0.20000000000000001, 0.40000000000000002)
     """
@@ -190,7 +188,7 @@ def rank_calibration(y_true, y_pred, groups):
     r = np.transpose([y_true,y_pred,groups])
     r = r[r[:,0].argsort()]
     #count the items in each group for normalization
-    len_groups = np.bincount(groups)
+    len_groups = np.bincount(groups, minlength=2)
     p0 = _pairs(len(r)) - _pairs(len_groups[1])
     p1 = _pairs(len(r)) - _pairs(len_groups[0])
     # count pairs
@@ -198,12 +196,14 @@ def rank_calibration(y_true, y_pred, groups):
     e1 = 0 if p1 == 0 else _count_inversions(r, 0, len(r)-1, _merge_cal, 1)[1] / p1
     return e0, e1 
 
-def rank_parity(g):
+def rank_parity(y,groups):
     """Rank Parity error
 
     Parameters
     ----------
-
+    y: array-like of shape = (n_samples)
+        rank values.
+        
     groups : array-like of shape = (n_samples)
         binary integer array with group labels for each sample, in ranked order.
     
@@ -217,17 +217,18 @@ def rank_parity(g):
 
     Examples
     --------
-    >>> groups = [0,1,1,0]
+    >>> y = [1,3,4,2]
+    >>> groups =[0,1,0,1]
     >>> rank_parity(groups)
     (0.5,0.5)
-    >>> groups = [1,0,1,0]
-    >>> rank_parity(groups)
-    (0.75,0.25)
     
     """
     # assume groups vector is in rank order
     #count the items in each group for normalization
-    len_groups = np.bincount(g)
+    r = np.transpose([y,groups])
+    r = r[r[:,0].argsort()]
+    g= np.array(r[:,1], dtype=int)
+    len_groups = np.bincount(g, minlength=2)
     if(len_groups[1] == 0):
         #if there are no group 1 items, group 0 always preferred
         return 1.,0.
