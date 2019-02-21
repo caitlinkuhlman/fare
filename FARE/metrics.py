@@ -147,7 +147,7 @@ def rank_equality(y_true, y_pred, groups):
     r = np.transpose([y_true,y_pred,groups])
     r = r[r[:,0].argsort()]
     #count the items in each group for narmalization
-    len_groups = np.bincount(groups, minlength=2)
+    len_groups = np.bincount(np.array(groups, dtype=int), minlength=2)
     p = len_groups[0]*len_groups[1]
     e0 = 0 if p == 0 else _count_inversions(r, 0, len(r)-1, _merge_eq, 0)[1] / p
     e1 = 0 if p == 0 else _count_inversions(r, 0, len(r)-1, _merge_eq, 1)[1] / p
@@ -188,7 +188,7 @@ def rank_calibration(y_true, y_pred, groups):
     r = np.transpose([y_true,y_pred,groups])
     r = r[r[:,0].argsort()]
     #count the items in each group for normalization
-    len_groups = np.bincount(groups, minlength=2)
+    len_groups = np.bincount(np.array(groups, dtype=int), minlength=2)
     p0 = _pairs(len(r)) - _pairs(len_groups[1])
     p1 = _pairs(len(r)) - _pairs(len_groups[0])
     # count pairs
@@ -228,7 +228,7 @@ def rank_parity(y,groups):
     r = np.transpose([y,groups])
     r = r[r[:,0].argsort()]
     g= np.array(r[:,1], dtype=int)
-    len_groups = np.bincount(g, minlength=2)
+    len_groups = np.bincount(np.array(groups, dtype=int), minlength=2)
     if(len_groups[1] == 0):
         #if there are no group 1 items, group 0 always preferred
         return 1.,0.
