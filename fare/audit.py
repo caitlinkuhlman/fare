@@ -12,13 +12,15 @@
 
 import numpy as np
 from scipy import stats
-from fare.metrics import *
+import matplotlib.pyplot as plt
+from fare.metrics import rank_parity, rank_equality, rank_calibration
 
 __ALL__ = [
     "audit_parity",
     "audit_equality",
     "audit_calibration"
     "generate_diagnostics"
+    "plot_audit"
 ]
 
 
@@ -28,24 +30,24 @@ def audit_parity(y, groups, window, step):
 
     Parameters
     ----------
-    y: array-like of shape = (n_samples)
-        rank values.
+    y : array-like of shape = (n_samples)
+        Rank values.
 
     groups : array-like of shape = (n_samples)
-        binary integer array with group labels for each sample. 
+        Binary integer array with group labels for each sample. 
 
     window : int
-        number of instances in each bin
+        The number of instances in each bin.
         
     step : int
-        step size for sliding window
+        Step size for sliding window.
         
     Returns
     -------
-    error0: array-like of shape = (n_bins)
+    error0 : array-like of shape = (n_bins)
         The rank parity error sequence for group 0
 
-    error1: array-like of shape = (n_bins)
+    error1 : array-like of shape = (n_bins)
         The rank parity error sequence for group 1
 
     Examples
@@ -91,21 +93,21 @@ def audit_equality(y_true, y_pred, groups, window, step):
         Estimated target values.
 
     groups : array-like of shape = (n_samples)
-        binary integer array with group labels for each sample. 
+        Binary integer array with group labels for each sample. 
 
     window : int
-        number of instances in each bin
+        The number of instances in each bin.
         
     step : int
-        step size for sliding window
+        Step size for sliding window.
         
     Returns
     -------
-    error0: array-like of shape = (n_bins)
-        The rank equality error sequence for group 0
+    error0 : array-like of shape = (n_bins)
+        The rank equality error sequence for group 0.
 
-    error1: array-like of shape = (n_bins)
-        The rank equality error sequence for group 1
+    error1 : array-like of shape = (n_bins)
+        The rank equality error sequence for group 1.
 
     Examples
     --------
@@ -152,18 +154,18 @@ def audit_calibration(y_true, y_pred, groups, window, step):
         binary integer array with group labels for each sample. 
 
     window : int
-        number of instances in each bin
+        The number of instances in each bin.
         
     step : int
-        step size for sliding window
+        Step size for sliding window.
         
     Returns
     -------
-    error0: array-like of shape = (n_bins)
-        The rank calibration error sequence for group 0
+    error0 : array-like of shape = (n_bins)
+        The rank calibration error sequence for group 0.
 
-    error1: array-like of shape = (n_bins)
-        The rank calibration error sequence for group 1
+    error1 : array-like of shape = (n_bins)
+        The rank calibration error sequence for group 1.
 
     Examples
     --------
@@ -201,15 +203,14 @@ def generate_diagnostics(err0, err1):
 
     Parameters
     ----------
-    err0: array-like of shape = (n_bins)
-        The rank calibration error sequence for group 0
+    err0 : array-like of shape = (n_bins)
+        The error sequence for group 0.
 
-    err1: array-like of shape = (n_bins)
-        The rank calibration error sequence for group 1
+    err1 : array-like of shape = (n_bins)
+        The error sequence for group 1.
         
     Returns
     -------
-
     trend0 : float
         The trend diagnostic for err0. Computed as the slope of the best fit line.
         
@@ -237,3 +238,77 @@ def generate_diagnostics(err0, err1):
     #significance
     #errs.append(stats.ttest_ind(err0,err1)[1])
     return diagnostics
+
+
+def plot_audit(y_true, y_pred, groups, window, step, title, filename, label=True): 
+    """Generate and plot three pairs of error sequences: rank parity, rank calibration, and rank equality. 
+       The resulting plot is written to the specified filename.
+
+    Parameters
+    ----------
+    y_true : array-like of shape = (n_samples)
+        Ground truth (correct) target values.
+
+    y_pred : array-like of shape = (n_samples)
+        Estimated target values.
+
+    groups : array-like of shape = (n_samples)
+        binary integer array with group labels for each sample. 
+
+    window : int
+        The number of instances in each bin.
+        
+    step : int
+        Step size for sliding window.
+
+    title : 
+        Title for the plot.
+
+    filename : 
+        Name of output file.
+
+    label : boolean, optional
+        Indicates whether to print the title and axis labels for plot. 
+        
+    
+    Examples
+    --------
+    
+    """             
+    # plot
+    f, axs = plt.subplots(3, 1, sharex='col', sharey='row',figsize=(2.25, 6))
+    
+    e0,e1 = audit_parity(y_pred, groups, window, step)
+    axs[0].plot(e0, color='black' ,linewidth=2)
+    axs[0].plot(e1, color='red', linestyle='dashed',linewidth=2)
+    axs[0].set_yticks([0,0.5,1])
+    axs[0].set_yticklabels([0.0,0.5,1.0],fontsize = 14) 
+    axs[0].set_title(title, size=24) # Title
+                    
+    e0,e1 = audit_calibration(y_true, y_pred, groups, window, step)
+    axs[1].plot(e0, color='black',linewidth=2)
+    axs[1].plot(e1, color='red', linestyle='dashed',linewidth=2)
+    axs[1].set_yticks([0,0.5,1])
+    axs[1].set_yticklabels([0.0,0.5,1.0],fontsize = 14)
+        
+    e0,e1 = audit_equality(y_true, y_pred, groups, window, step)
+    axs[2].plot(e0, color='black',linewidth=2)
+    axs[2].plot(e1, color='red', linestyle='dashed',linewidth=2)
+    axs[2].set_yticks([0,0.5,1])
+    axs[2].set_yticklabels([0.0,0.5,1.0],fontsize = 14)
+    axs[2].xaxis.set_tick_params(labelsize=14)
+
+    if(label):
+        axs[0].set_ylabel("Rpar", size=20)
+        axs[1].set_ylabel("Rcal", size=20)
+        axs[2].set_ylabel("Req", size=20)
+        axs[2].set_xlabel("Windows", size=20)
+    else:
+        axs[0].get_yaxis().set_ticks([])
+        axs[1].get_yaxis().set_ticks([])
+        axs[2].get_yaxis().set_ticks([])
+    
+    plt.savefig(filename, bbox_inches='tight')
+    
+    return
+

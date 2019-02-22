@@ -113,7 +113,7 @@ def _count_inversions(data, s, e, merge_fnc, g):
 
 
 def rank_equality(y_true, y_pred, groups):
-    """Rank Equality error
+    """Compute the rank equality error between two rankings.
 
     Parameters
     ----------
@@ -124,15 +124,15 @@ def rank_equality(y_true, y_pred, groups):
         Estimated target values.
 
     groups : array-like of shape = (n_samples)
-        binary integer array with group labels for each sample. 
+        Binary integer array with group labels for each sample. 
 
     Returns
-    -------
-    error0: float
-        The rank parity error for group 0
+    ----------
+    error0 : float
+        The rank parity error for group 0.
 
-    error1: float
-        The rank parity error for group 1
+    error1 : float
+        The rank parity error for group 1.
 
     Examples
     --------
@@ -141,7 +141,6 @@ def rank_equality(y_true, y_pred, groups):
     >>> groups =[0,1,0,1]
     >>> rank_equality(y_true,y_pred,groups)
     (0.0, 0.25)
-    
     """
     #sort instances by y_pred
     r = np.transpose([y_true,y_pred,groups])
@@ -155,7 +154,7 @@ def rank_equality(y_true, y_pred, groups):
 
 
 def rank_calibration(y_true, y_pred, groups):
-    """Rank Calibration error
+    """Compute the rank calibration error between two rankings.
 
     Parameters
     ----------
@@ -166,14 +165,14 @@ def rank_calibration(y_true, y_pred, groups):
         Estimated target values.
 
     groups : array-like of shape = (n_samples)
-        binary integer array with group labels for each sample. 
+        Binary integer array with group labels for each sample. 
 
     Returns
     -------
-    error0: float
+    error0 : float
         The rank parity error for group 0.
 
-    error1: float
+    error1 : float
         The rank parity error for group 1.
 
     Examples
@@ -197,31 +196,30 @@ def rank_calibration(y_true, y_pred, groups):
     return e0, e1 
 
 def rank_parity(y,groups):
-    """Rank Parity error
+    """Compute the rank parity error for one ranking.
 
     Parameters
     ----------
     y: array-like of shape = (n_samples)
-        rank values.
+        Rank values.
         
     groups : array-like of shape = (n_samples)
-        binary integer array with group labels for each sample, in ranked order.
+        Binary integer array with group labels for each sample.
     
     Returns
     -------
-    error0: float
+    error0 : float
         The rank parity error for group 0.
 
-    error1: float
+    error1 : float
         The rank partiy error for group 1.
 
     Examples
     --------
     >>> y = [1,3,4,2]
     >>> groups =[0,1,0,1]
-    >>> rank_parity(groups)
+    >>> rank_parity(y, groups)
     (0.5,0.5)
-    
     """
     # assume groups vector is in rank order
     #count the items in each group for normalization
