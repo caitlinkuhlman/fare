@@ -1,6 +1,10 @@
 # Compiled python modules.
 *.pyc
 __pycache__
+.cache/
+
+# Virtual environments
+env/
 
 # Setuptools distribution folder.
 /dist/
