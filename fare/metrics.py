@@ -2,7 +2,7 @@
 
     References
     ----------
-    Caitlin Kuhlman, Maryann VanValkenburg, Elke Rundensteiner. 
+    Caitlin Kuhlman, MaryAnn VanValkenburg, Elke Rundensteiner. 
     "FARE: Diagnostics for Fair Ranking using Pairwise Error Metrics" 
     in the proceedings of the Web Conference (WWW 2019)
 """
