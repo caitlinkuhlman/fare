@@ -7,4 +7,4 @@ This work is released under the 3-Clause BSD License.
 
 FARE implementation is compatible for use with [scikit-learn](https://scikit-learn.org/)
 
-The project organization was adaptd from the scikit-learn [project-template](https://github.com/scikit-learn-contrib/project-template)
+The project organization was adapted from the scikit-learn [project-template](https://github.com/scikit-learn-contrib/project-template)
