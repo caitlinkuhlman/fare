@@ -12,7 +12,7 @@
 
 import numpy as np
 from scipy import stats
-from metrics import *
+from fare.metrics import *
 
 __ALL__ = [
     "audit_parity",
