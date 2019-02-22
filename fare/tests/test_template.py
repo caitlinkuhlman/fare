@@ -5,9 +5,9 @@ from sklearn.datasets import load_iris
 from sklearn.utils.testing import assert_array_equal
 from sklearn.utils.testing import assert_allclose
 
-from FARE import TemplateEstimator
-from FARE import TemplateTransformer
-from FARE import TemplateClassifier
+from fare import TemplateEstimator
+from fare import TemplateTransformer
+from fare import TemplateClassifier
 
 
 @pytest.fixture

@@ -2,9 +2,9 @@ import pytest
 
 from sklearn.utils.estimator_checks import check_estimator
 
-from FARE import TemplateEstimator
-from FARE import TemplateClassifier
-from FARE import TemplateTransformer
+from fare import TemplateEstimator
+from fare import TemplateClassifier
+from fare import TemplateTransformer
 
 
 @pytest.mark.parametrize(
